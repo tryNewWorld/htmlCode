@@ -19,13 +19,26 @@ window.onload = function() {
 
         //6. 给删除图标添加点击事件
         delIMG.onclick = delFruit;
-
-        //8. 给按钮添加背景变换事件
-        var btns = document.getElementsByClassName("btn");
-        for(var i=0; i< btns.length; i++) {
-            //绑定事件
-        }
     }
+    //8. 给按钮添加背景变换事件
+    var btnTools = document.getElementsByClassName("btnTools")[0];
+    btnTools.onmouseover = overBtnBG;
+    btnTools.onmouseout = outBtnBG;
+
+    //9. 校验
+    var priceInput = document.getElementById("fprice");
+    var fnumInput = document.getElementById("fnum");
+    priceInput.onkeydown = ckInput;
+    fnumInput.onkeydown = ckInput;
+
+    //10. 添加
+    var addBtn = document.getElementById("add");
+    addBtn.onclick = addFruit; 
+
+    //11. 重置
+    var resetBtn = document.getElementById("reset");
+    resetBtn.onclick = clearInput;
+
 }
 
 function mouseoverBG() {
@@ -117,6 +130,9 @@ function updateZJ() {
 
 function delFruit() {
     if(event && event.srcElement && event.srcElement.tagName == "IMG") {
+        if(!confirm("是否删除")) {
+            return false;
+        }
         var tablFruit = document.getElementById("tbl_fruit_list");
         var img = event.srcElement;
         var td = img.parentElement;
@@ -130,11 +146,71 @@ function delFruit() {
 }
 
 function ckInput() {
-    var code = event.keyCode;debugger;
-    if(!((code >= 48 && code <= 57) || code == 13 || code == 8)) {
-        event.returnValue = false;
-    }
+    var code = event.keyCode;
+    
     if(code == 13) {
         event.srcElement.onblur();
     }
+    
+    if(!((code >= 48 && code <= 57) || code == 13 || code == 8)) {
+        event.returnValue = false;
+    }
+    return;
+}
+
+function overBtnBG() {
+    if(event && event.srcElement && event.srcElement.tagName == 'BUTTON') {
+        var btn = event.srcElement;
+        btn.style.backgroundColor = "blue";
+        btn.style.color = "white";
+
+        //手势
+        btn.style.cursor = "hand"
+    }
+}
+
+function outBtnBG() {
+    if(event && event.srcElement && event.srcElement.tagName == 'BUTTON') {
+        var btn = event.srcElement;
+        btn.style.backgroundColor = "#ece9d8";
+        btn.style.color = "gray";
+    }
+}
+
+function addFruit() {
+    var tablFruit = document.getElementById("tbl_fruit_list");
+
+    var tr = tablFruit.insertRow(tablFruit.rows.length-1);
+
+    var fnameInput = document.getElementById("fname");
+    var priceInput = document.getElementById("fprice");
+    var fnumInput = document.getElementById("fnum");
+
+    var fnameTD = tr.insertCell();
+    var priceTD = tr.insertCell();
+    var fnumTD = tr.insertCell();
+    var xjTD = tr.insertCell();
+    var operation = tr.insertCell();
+
+    fnameTD.innerText = fnameInput.value;
+    priceTD.innerText = priceInput.value;
+    fnumTD.innerText = fnumInput.value;
+    xjTD.innerText = parseInt(priceInput.value) * parseInt(fnumInput.value);
+    operation.innerHTML = '<td><img src="../img/delete.jpg" width="20" height="15"/></td>';
+
+    updateZJ();
+    window.onload();
+
+    clearInput();
+
+}
+
+function clearInput() {
+    var fnameInput = document.getElementById("fname");
+    var priceInput = document.getElementById("fprice");
+    var fnumInput = document.getElementById("fnum");
+
+    fnameInput.value = "";
+    priceInput.value = "";
+    fnumInput.value = "";
 }
